@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  accounts  Account[]
+}
+
+model Account {
+  id        String     @id @default(cuid())
+  kidName   String
+  current   Current?
+  periodics Periodic[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String     @unique
+}
+
+model Current {
+  sum       Int     @default(0)
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String  @unique
+}
+
+model Periodic {
+  id                      String       @id @default(cuid())
+  name                    String
+  title                   String
+  actionType              ActionType
+  amount                  Int
+  interval                String
+  nextOccurrence          DateTime?
+  startsAt                DateTime?
+  endsAt                  DateTime?
+  transactions            Transaction[] 
+  account                 Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId               String       
+}
+
+enum ActionType {
+  ADD
+  SUBTRACT
+  ADDRATE
+}
+
+model Transaction {
+  id         String     @id @default(cuid())
+  type       ActionType
+  amount     Int
+  executedAt DateTime
+  periodic   Periodic?   @relation(fields: [periodicId], references: [id], onDelete: Cascade)
+  periodicId String?
+}
