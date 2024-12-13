@@ -3,6 +3,7 @@ import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import cors from 'cors';
 
 import 'express-async-errors';
 
@@ -14,17 +15,15 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { RouteError } from '@src/common/route-errors';
 import { NodeEnvs } from '@src/common/constants';
 
-
 // **** Variables **** //
 
 const app = express();
-
 
 // **** Setup **** //
 
 // Basic middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 // Show routes called in console during development
 if (Env.NodeEnv === NodeEnvs.Dev.valueOf()) {
@@ -35,6 +34,12 @@ if (Env.NodeEnv === NodeEnvs.Dev.valueOf()) {
 if (Env.NodeEnv === NodeEnvs.Production.valueOf()) {
   app.use(helmet());
 }
+
+const corsOptions = {
+  origin: `http://localhost:5173`, // Replace with your allowed origin
+};
+
+app.use(cors(corsOptions));
 
 // Add APIs, must be after middleware
 app.use(Paths.Base, BaseRouter);
@@ -51,7 +56,6 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
   }
   return next(err);
 });
-
 
 // **** Front-End Content **** //
 
@@ -72,7 +76,6 @@ app.get('/', (_: Request, res: Response) => {
 app.get('/users', (_: Request, res: Response) => {
   return res.sendFile('users.html', { root: viewsDir });
 });
-
 
 // **** Export default **** //
 

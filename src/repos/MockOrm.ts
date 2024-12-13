@@ -1,19 +1,16 @@
 import jsonfile from 'jsonfile';
 
-import { IUser } from '@src/models/User';
-
+import type { User } from '@prisma/client';
 
 // **** Variables **** //
 
 const DB_FILE_NAME = 'database.json';
 
-
 // **** Types **** //
 
 interface IDb {
-  users: IUser[];
+  users: User[];
 }
-
 
 // **** Functions **** //
 
@@ -28,9 +25,8 @@ function openDb(): Promise<IDb> {
  * Update the file.
  */
 function saveDb(db: IDb): Promise<void> {
-  return jsonfile.writeFile((__dirname + '/' + DB_FILE_NAME), db);
+  return jsonfile.writeFile(__dirname + '/' + DB_FILE_NAME, db);
 }
-
 
 // **** Export default **** //
 

@@ -1,6 +1,5 @@
 import jetSchema from 'jet-schema';
-import { isBool, isNum, isStr } from './validators';
-
+import { isBool, isNum, isStr } from './miscValidators';
 
 export default jetSchema({
   globals: [
