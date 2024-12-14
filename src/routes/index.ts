@@ -12,10 +12,10 @@ const apiRouter = Router();
 // Init router
 const userRouter = Router();
 
-// Get all users
+// users routes
 userRouter.get(Paths.Users.GetAll, UserRoutes.getAll);
 userRouter.get(Paths.Users.Get, UserRoutes.getOne);
-// userRouter.post(Paths.Users.Add, UserRoutes.add);
+userRouter.post(Paths.Users.Add, UserRoutes.add);
 userRouter.put(Paths.Users.Update, UserRoutes.update);
 // userRouter.delete(Paths.Users.Delete, UserRoutes.delete);
 

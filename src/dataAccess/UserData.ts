@@ -1,5 +1,4 @@
 import type { User } from '@prisma/client';
-import { getRandomInt } from '@src/util/misc';
 import { db } from '@src/libs/db';
 import { prismaDisconnect } from '@src/libs/dissconnect';
 

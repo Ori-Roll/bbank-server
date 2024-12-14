@@ -1,5 +1,5 @@
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import UserHandler from '@src/handlers/UserHandler';
+import Handler from '@src/handlers/UserHandler';
 import { User } from '@prisma/client';
 import { ValidationErr } from '@src/common/route-errors';
 
@@ -29,7 +29,7 @@ function onValidationError(
 
 // TODO: Move this somewhere else
 
-const UserValidator = <P extends boolean>(
+const UserValidator = <P extends boolean = false>(
   obj: P extends true ? TObj<Pick<User, 'id'> & Partial<User>> : TObj<User>
 ) => {
   if (!obj || typeof obj !== 'object')
@@ -65,7 +65,7 @@ const validators = {
  * Get all users.
  */
 async function getAll(_: IReq<User>, res: IRes<any>) {
-  const users = await UserHandler.getAll();
+  const users = await Handler.getAll();
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
@@ -74,7 +74,7 @@ async function getAll(_: IReq<User>, res: IRes<any>) {
 
 async function getOne(req: IReq<User, { id: string }>, res: IRes<any>) {
   const { id } = req.params;
-  const user = await UserHandler.getOne(id);
+  const user = await Handler.getOne(id);
   res.status(HttpStatusCodes.OK).json({ user });
 }
 
@@ -83,7 +83,7 @@ async function getOne(req: IReq<User, { id: string }>, res: IRes<any>) {
  */
 async function add(req: IReq<User>, res: IRes<User>) {
   const { user } = validators.add(req.body);
-  await UserHandler.addOne(user);
+  await Handler.addOne(user);
   res.status(HttpStatusCodes.CREATED).json({ user });
 }
 
@@ -95,7 +95,7 @@ async function update(
   res: IRes<any>
 ) {
   const { user } = validators.update(req.body);
-  await UserHandler.updateOne(user);
+  await Handler.updateOne(user);
   res.status(HttpStatusCodes.OK).end();
 }
 
@@ -104,7 +104,7 @@ async function update(
  */
 // async function delete_(req: IReq<User>, res: IRes<any>) {
 //   const { id } = validators.delete(req.params);
-//   await UserHandler.delete(id);
+//   await Handler.delete(id);
 //   res.status(HttpStatusCodes.OK).end();
 // }
 
@@ -113,7 +113,7 @@ async function update(
 export default {
   getAll,
   getOne,
-  // add,
+  add,
   update,
   // delete: delete_,
 } as const;
