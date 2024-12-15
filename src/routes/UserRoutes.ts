@@ -2,34 +2,12 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import Handler from '@src/handlers/UserHandler';
 import { User } from '@prisma/client';
 import { ValidationErr } from '@src/common/route-errors';
-
-import { Response, Request } from 'express';
-
-// TODO: Move this somewhere else
-
-// **** Types **** //
-
-export type TObj<B> = Record<string, B>;
-export type IReq<B, P = void> = Request<P, TObj<B>, TObj<B>, TObj<B>>;
-export type IRes<B> = Response<unknown, TObj<B>>;
+import { IReq, IRes, TObj } from '@src/common/types';
+import { getValidate } from '@src/validators/common/getValidate';
 
 // TODO: Move this somewhere else
 
-function onValidationError(
-  parameter: string,
-  value?: unknown,
-  caughtErr?: string
-): void {
-  if (caughtErr !== undefined) {
-    throw new ValidationErr(parameter, value, caughtErr);
-  } else {
-    throw new ValidationErr(parameter, value, 'unknown validation error'); //TODO: Is this the error for unknown validation error? When will this be thrown?
-  }
-}
-
-// TODO: Move this somewhere else
-
-const UserValidator = <P extends boolean = false>(
+const userValidator = <P extends boolean = false>(
   obj: P extends true ? TObj<Pick<User, 'id'> & Partial<User>> : TObj<User>
 ) => {
   if (!obj || typeof obj !== 'object')
@@ -40,23 +18,12 @@ const UserValidator = <P extends boolean = false>(
   return true;
 };
 
-// TODO: Move this somewhere else
-
-const getValidate =
-  <V>(validator: (value: V) => boolean) =>
-  (value: V) => {
-    //TODO: Respond to zod validation here - !!This is wrong, change once validation is implemented !!
-    const validationResponse = validator(value);
-    if (!validationResponse) onValidationError('user', value);
-    return value;
-  };
-
 // TODO: Move this somewhere else??
 
 const validators = {
-  add: getValidate(UserValidator),
-  update: getValidate(UserValidator<true>),
-  delete: getValidate(UserValidator),
+  add: getValidate(userValidator),
+  update: getValidate(userValidator<true>),
+  delete: getValidate(userValidator),
 } as const;
 
 // **** Functions **** //
