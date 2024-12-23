@@ -24,22 +24,20 @@ function getOne(id: string): Promise<User | null> {
 /**
  * Add one user.
  */
-function addOne(user: User): Promise<void> {
-  return UserData.add(user);
+function addOne(user: User): Promise<User> {
+  return UserData.addNewUser(user);
 }
 
 /**
  * Update one user.
  */
-async function updateOne(
-  user: Pick<User, 'id'> & Partial<User>
-): Promise<void> {
-  const persists = await UserData.persists(user.id);
+async function updateOne(id: string, user: Partial<User>): Promise<User> {
+  const persists = await UserData.persists(id);
   if (!persists) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, USER_NOT_FOUND_ERR);
   }
   // Return user
-  return UserData.update(user);
+  return UserData.updateUser(id, user);
 }
 
 /**

@@ -1,8 +1,9 @@
-export const getValidate =
-  <V>(validator: (value: V) => boolean) =>
-  (value: V) => {
+export const useValidator =
+  <V>(validator: (reqBody: V) => V) =>
+  (reqBody: V) => {
+    if (!reqBody || typeof reqBody !== 'object')
+      throw new Error('Request body is missing'); //Can this happen?
     //TODO: Respond to zod validation here - !!This is wrong, change once validation is implemented !!
-    const validationResponse = validator(value);
-    if (!validationResponse) onValidationError('user', value);
-    return value;
+    const validationResponse = validator(reqBody);
+    return reqBody;
   };
