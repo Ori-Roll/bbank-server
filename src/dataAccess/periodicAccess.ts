@@ -6,6 +6,7 @@ export const getPeriodicById = async (id: string): Promise<Periodic | null> => {
   return await prisma.periodic.findUnique({
     where: { id },
   });
+  // TODO: add prismaDisconnect to all data access functions
 };
 
 export const getAllPeriodicsForAccount = async (

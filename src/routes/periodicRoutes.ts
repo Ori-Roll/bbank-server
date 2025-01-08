@@ -11,8 +11,6 @@ export const getAllPeriodicsForAccount = async (
   res: IRes<Periodic[]>
 ) => {
   const { id } = req.params;
-  // TODO: Implement validation, including checking if the user is authorized to access this data
-  // TODO: Implement pagination? Is that necessary in this case?
   const periodics = await handler.getAll(id);
   res
     .setHeader('Content-Type', 'application/json')
@@ -30,7 +28,10 @@ export const getPeriodicById = async (
 ) => {
   const { id } = req.params;
   const periodic = await handler.getOne(id);
-  res.status(HttpStatusCodes.OK).json({ periodic });
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ periodic });
 };
 
 /**
@@ -39,8 +40,7 @@ export const getPeriodicById = async (
 
 export const addPeriodic = async (req: IReq<Periodic>, res: IRes<Periodic>) => {
   const { periodic } = req.body;
-  // TODO: Implement validation, including checking if the user has access to the account
-  // TODO: Implement validation for the periodic user rules for the account?
+  // TODO: Implement validation
   const newPeriodic = await handler.add(periodic);
   res.status(HttpStatusCodes.CREATED).json({ periodic: newPeriodic });
 };

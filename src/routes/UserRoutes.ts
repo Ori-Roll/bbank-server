@@ -1,29 +1,28 @@
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import Handler from '@src/handlers/UserHandler';
+import handler from '@src/handlers/UserHandler';
 import { User } from '@prisma/client';
-import { ValidationErr } from '@src/common/route-errors';
 import { IReq, IRes, TObj } from '@src/common/types';
-import { getValidate } from '@src/validators/common/getValidate';
+import { useValidator } from '@src/validators/common/getValidate';
+import { ValidationErr } from '@src/common/route-errors';
+import { Application } from 'express';
 
 // TODO: Move this somewhere else
 
 const userValidator = <P extends boolean = false>(
-  obj: P extends true ? TObj<Pick<User, 'id'> & Partial<User>> : TObj<User>
+  obj: P extends true ? TObj<Partial<User>> : TObj<User>
 ) => {
-  if (!obj || typeof obj !== 'object')
-    throw new Error('User request body is missing'); //Can this happen?
   if (!obj.user || typeof obj.user !== 'object')
-    throw new Error('User object is missing');
+    throw new ValidationErr('User object', obj.user);
   // TODO: Implement zod validation here
-  return true;
+  return obj;
 };
 
 // TODO: Move this somewhere else??
 
 const validators = {
-  add: getValidate(userValidator),
-  update: getValidate(userValidator<true>),
-  delete: getValidate(userValidator),
+  add: useValidator(userValidator),
+  update: useValidator(userValidator<true>),
+  delete: useValidator(userValidator),
 } as const;
 
 // **** Functions **** //
@@ -31,56 +30,65 @@ const validators = {
 /**
  * Get all users.
  */
-async function getAll(_: IReq<User>, res: IRes<any>) {
-  const users = await Handler.getAll();
+const getAll = async (req: IReq<User>, res: IRes<any>) => {
+  const users = await handler.getAll();
+
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
     .json({ users });
-}
+};
 
 async function getOne(req: IReq<User, { id: string }>, res: IRes<any>) {
   const { id } = req.params;
-  const user = await Handler.getOne(id);
-  res.status(HttpStatusCodes.OK).json({ user });
+  const user = await handler.getOne(id);
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ user });
 }
 
 /**
  * Add one user.
  */
-async function add(req: IReq<User>, res: IRes<User>) {
+const add = async (req: IReq<User>, res: IRes<User>) => {
   const { user } = validators.add(req.body);
-  await Handler.addOne(user);
-  res.status(HttpStatusCodes.CREATED).json({ user });
-}
+  const newUser = await handler.addOne(user);
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.CREATED)
+    .json({ newUser });
+};
 
 /**
  * Update one user.
  */
-async function update(
-  req: IReq<Pick<User, 'id'> & Partial<User>>,
-  res: IRes<any>
-) {
+const update = async (
+  req: IReq<Partial<User>, { id: string }>,
+  res: IRes<User>
+) => {
   const { user } = validators.update(req.body);
-  await Handler.updateOne(user);
-  res.status(HttpStatusCodes.OK).end();
-}
+  const { id } = req.params;
+  const updatedUser = await handler.updateOne(id, user);
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ user: updatedUser });
+};
 
 /**
  * Delete one user.
  */
-// async function delete_(req: IReq<User>, res: IRes<any>) {
-//   const { id } = validators.delete(req.params);
-//   await Handler.delete(id);
-//   res.status(HttpStatusCodes.OK).end();
-// }
-
-// **** Export default **** //
+const _delete = async (req: IReq<User, { id: string }>, res: IRes<any>) => {
+  const { id } = req.params;
+  await handler.delete(id);
+  res.status(HttpStatusCodes.OK).end();
+};
 
 export default {
   getAll,
   getOne,
   add,
   update,
-  // delete: delete_,
+  delete: _delete,
 } as const;
