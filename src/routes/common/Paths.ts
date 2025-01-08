@@ -8,4 +8,12 @@ export default {
     Update: '/:id',
     Delete: '/:id',
   },
+  Accounts: {
+    Base: '/accounts',
+    GetAll: '/',
+    Get: '/:id',
+    Add: '/',
+    Update: '/:id',
+    Delete: '/:id',
+  },
 } as const;

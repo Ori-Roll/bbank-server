@@ -1,6 +1,6 @@
 import type { User } from '@prisma/client';
-import { db } from '@src/libs/db';
-import { prismaDisconnect } from '@src/libs/dissconnect';
+import { db } from '@src/config/db';
+import { prismaDisconnect } from '@src/config/dissconnect';
 
 // **** Functions **** //
 
@@ -32,6 +32,8 @@ async function getOne(id: string): Promise<User | null> {
       },
     },
   });
+  // TODO: return no user found if user is null
+  prismaDisconnect();
   return user;
 }
 
@@ -57,42 +59,37 @@ async function getAll(): Promise<User[]> {
 /**
  * Add one user.
  */
-async function add(user: User): Promise<void> {
-  // const _db = await orm.open_db();
-  // user.id = getRandomInt();
-  // _db.users.push(user);
-  // return orm.save_db(_db);
+async function addNewUser(user: User): Promise<User> {
+  const newUser = await db.user.create({
+    data: {
+      ...user,
+      // TODO: The account is mandatory, but the user should be able to create an account later
+    },
+  });
+  prismaDisconnect();
+  return newUser;
 }
 
 /**
  * Update a user.
  */
-async function update(user: Pick<User, 'id'> & Partial<User>): Promise<void> {
-  // const _db = await orm.open_db();
-  // for (let i = 0; i < _db.users.length; i++) {
-  //   if (_db.users[i].id === user.id) {
-  //     const _dbUser = _db.users[i];
-  //     _db.users[i] = {s
-  //       ..._dbUser,
-  //       name: user.name,
-  //       email: user.email,
-  //     };
-  //     return orm.save_db(_db);
-  //   }
-  // }
+async function updateUser(id: string, user: Partial<User>): Promise<User> {
+  const updatedUser = await db.user.update({
+    where: { id },
+    data: user,
+  });
+  prismaDisconnect();
+  return updatedUser;
 }
 
 /**
  * Delete one user.
  */
-async function delete_(id: string): Promise<void> {
-  // const _db = await orm.open_db();
-  // for (let i = 0; i < _db.users.length; i++) {
-  //   if (_db.users[i].id === id) {
-  //     _db.users.splice(i, 1);
-  //     return orm.save_db(_db);
-  //   }
-  // }
+async function deleteUser(id: string): Promise<void> {
+  await db.user.delete({
+    where: { id },
+  });
+  prismaDisconnect();
 }
 
 // **** Export default **** //
@@ -101,7 +98,7 @@ export default {
   getOne,
   persists,
   getAll,
-  add,
-  update,
-  delete: delete_,
+  addNewUser,
+  updateUser,
+  delete: deleteUser,
 } as const;

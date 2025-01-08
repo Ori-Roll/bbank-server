@@ -2,7 +2,8 @@ import { Router } from 'express';
 
 import Paths from './common/Paths';
 import userRoutes from './userRoutes';
-import periodicRoutes from './PeriodicRoutes';
+import accountRoutes from './accountRoutes';
+// import periodicRoutes from './PeriodicRoutes';
 
 // **** Variables **** //
 
@@ -12,6 +13,7 @@ const apiRouter = Router();
 
 // Init router
 const userRouter = Router();
+const accountRouter = Router();
 
 // users routes
 userRouter.get(Paths.Users.GetAll, userRoutes.getAll);
@@ -20,8 +22,13 @@ userRouter.post(Paths.Users.Add, userRoutes.add);
 userRouter.put(Paths.Users.Update, userRoutes.update);
 // userRouter.delete(Paths.Users.Delete, userRoutes.delete);
 
+// Account routes
+
+accountRouter.get(Paths.Accounts.GetAll, accountRoutes.getAllUserAccounts);
+
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, userRouter);
+apiRouter.use(Paths.Accounts.Base, accountRouter);
 
 // **** Export default **** //
 
