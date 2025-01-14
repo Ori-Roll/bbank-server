@@ -27,8 +27,8 @@ const FE_DEV_URL = 'http://localhost:5173';
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: FE_DEV_URL,
-    successRedirect: `${FE_DEV_URL}/auth/login`,
+    failureRedirect: `${FE_DEV_URL}/auth/login`,
+    successRedirect: FE_DEV_URL,
   })
 );
 
