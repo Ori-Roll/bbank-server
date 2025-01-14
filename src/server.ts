@@ -88,9 +88,9 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Redirect to login if not logged in.
-app.get('/users/login', (_: Request, res: Response) => {
-  return res.sendFile('users.html', { root: viewsDir });
-});
+// app.get('/users/login', (_: Request, res: Response) => {
+//   return res.sendFile('users.html', { root: viewsDir });
+// });
 
 // **** Export default **** //
 

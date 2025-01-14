@@ -38,7 +38,7 @@ const getAllUserAccounts = async (req: IReq<void>, res: IRes<Account>) => {
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
-    .json({ accounts });
+    .json({ data: accounts });
 };
 
 const getOneAccount = async (
@@ -53,7 +53,7 @@ const getOneAccount = async (
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
-    .json({ account });
+    .json({ data: account });
 };
 
 const addAccount = async (req: IReq<Account>, res: IRes<Account>) => {
@@ -65,7 +65,7 @@ const addAccount = async (req: IReq<Account>, res: IRes<Account>) => {
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.CREATED)
-    .json({ account });
+    .json({ data: account });
 };
 
 export default {
