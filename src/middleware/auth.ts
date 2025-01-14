@@ -28,8 +28,6 @@ export const CheckAuthenticated = (
   // if the route is public
   const parsedUrl = req._parsedUrl.pathname;
 
-  console.log('getcookie(req) is: ', getcookie(req));
-  console.log('in checkAuthenticated req.url is: ', parsedUrl);
   if (publicRoutes.includes(parsedUrl)) {
     console.log('!!! publicRoutes');
     return next();
@@ -37,9 +35,14 @@ export const CheckAuthenticated = (
 
   // authenticated user
   if (req.isAuthenticated()) {
-    console.log('!!! isAuthenticated');
+    if (!req.user) {
+      return res
+        .status(HttpStatusCodes.UNAUTHORIZED)
+        .json({ message: 'User does not exist' });
+    }
     return next();
   }
+
   // not authenticated
   console.log('!!! not authenticated');
   return res

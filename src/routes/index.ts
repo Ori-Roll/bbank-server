@@ -25,6 +25,8 @@ userRouter.put(Paths.Users.Update, userRoutes.update);
 // Account routes
 
 accountRouter.get(Paths.Accounts.GetAll, accountRoutes.getAllUserAccounts);
+accountRouter.get(Paths.Accounts.Get, accountRoutes.getOneAccount);
+accountRouter.post(Paths.Accounts.Add, accountRoutes.addAccount);
 
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, userRouter);

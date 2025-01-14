@@ -9,6 +9,9 @@ const getAllUserAccounts = async (userID: string) => {
       where: {
         userId: userID,
       },
+      include: {
+        current: true,
+      },
     });
     return accounts;
   } catch (error) {
@@ -28,6 +31,10 @@ const getOneAccount = async (id: string, userId: string) => {
         id,
         userId,
       },
+      include: {
+        current: true,
+        periodics: true,
+      },
     });
     return account;
   } catch (error) {
@@ -40,10 +47,28 @@ const getOneAccount = async (id: string, userId: string) => {
 };
 
 const addAccount = async (data: Account) => {
+  console.log('GOT DATA', data);
+
   try {
     const account = await db.account.create({
-      data,
+      data: {
+        ...data,
+        ...(data.current
+          ? {
+              current: {
+                create: {
+                  ...data.current,
+                },
+              },
+            }
+          : {}),
+      },
+      include: {
+        current: true,
+        periodics: true,
+      },
     });
+    console.log('returning account', account);
     return account;
   } catch (error) {
     console.error(error);
@@ -54,8 +79,24 @@ const addAccount = async (data: Account) => {
   }
 };
 
+const deleteAccount = async (id: string) => {
+  try {
+    const account = await db.account.delete({
+      where: { id },
+    });
+    return account;
+  } catch (error) {
+    console.error(error);
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Could not delete account'
+    );
+  }
+};
+
 export default {
   getAllUserAccounts,
   getOneAccount,
   addAccount,
+  deleteAccount,
 } as const;

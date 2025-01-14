@@ -41,6 +41,35 @@ const getAllUserAccounts = async (req: IReq<void>, res: IRes<Account>) => {
     .json({ accounts });
 };
 
+const getOneAccount = async (
+  req: IReq<Account, { id: string }>,
+  res: IRes<Account>
+) => {
+  const user = req.user;
+  const { id } = req.params;
+
+  const account = await handler.getOneAccount(id, user.id);
+
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ account });
+};
+
+const addAccount = async (req: IReq<Account>, res: IRes<Account>) => {
+  const user = req.user;
+  const data = req.body;
+
+  const account = await handler.addAccount(data, user.id);
+
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.CREATED)
+    .json({ account });
+};
+
 export default {
   getAllUserAccounts,
+  getOneAccount,
+  addAccount,
 } as const;

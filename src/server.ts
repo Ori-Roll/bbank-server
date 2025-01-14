@@ -17,6 +17,7 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { RouteError } from '@src/common/route-errors';
 import { NodeEnvs } from '@src/common/constants';
 import { CheckAuthenticated } from './middleware/auth';
+import sessionConfig from './config/sessionConfig';
 
 // **** Variables **** //
 
@@ -45,27 +46,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'dog cat secret key string bla',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      // secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    },
-  })
-);
-
-// app.use(
-//   cookieSession({
-//     maxAge: 24 * 60 * 60 * 1000,
-//     keys: [process.env.SESSION_SECRET || 'osis1342y93yr89sjhfkdsbfDSFAF32---D'],
-//   })
-// );
+app.use(sessionConfig);
 
 app.use(passport.initialize());
+
 app.use(passport.session());
 
 app.use('*', CheckAuthenticated);
@@ -100,10 +84,6 @@ app.use(express.static(staticDir));
 
 // Nav to users pg by default
 app.get('/', (req: Request, res: Response) => {
-  console.log('req.session', req.session);
-  console.log('req.session.cookie', req.session.cookie);
-  console.log('req.isAuthenticated', req.isAuthenticated());
-  console.log('req.user', req.user);
   return res.redirect('/users');
 });
 
@@ -115,3 +95,10 @@ app.get('/users/login', (_: Request, res: Response) => {
 // **** Export default **** //
 
 export default app;
+
+// app.use(
+//   cookieSession({
+//     maxAge: 24 * 60 * 60 * 1000,
+//     keys: [process.env.SESSION_SECRET || 'osis1342y93yr89sjhfkdsbfDSFAF32---D'],
+//   })
+// );

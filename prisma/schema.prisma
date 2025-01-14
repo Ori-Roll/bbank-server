@@ -27,7 +27,7 @@ model Account {
   current   Current?
   periodics Periodic[]
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String     @unique
+  userId    String     
 }
 
 model Current {

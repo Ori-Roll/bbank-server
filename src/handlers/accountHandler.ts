@@ -9,7 +9,6 @@ const getAllUserAccounts = async (userId: string) => {
   if (!user) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
   }
-  console.log('In handler - user: ', user);
   return await accountAccess.getAllUserAccounts(userId);
 };
 
@@ -30,12 +29,12 @@ const getOneAccount = async (id: string, userId: string) => {
 };
 
 const addAccount = async (data: Omit<Account, 'userId'>, userId: string) => {
-  // TODO: This is a mock user id. Replace once the auth is implemented.
+  console.log('In addAccount - userId: ', userId);
   const user = await userHandler.getOne(userId);
   if (!user) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
   }
-  const dataWithUserId = { ...data, userId };
+  const dataWithUserId = { ...data, userId: user.id };
   return await accountAccess.addAccount(dataWithUserId);
 };
 
