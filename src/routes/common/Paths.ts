@@ -4,6 +4,7 @@ export default {
     Base: '/users',
     GetAll: '/',
     Get: '/:id',
+    Me: '/me',
     Add: '/',
     Update: '/:id',
     Delete: '/:id',

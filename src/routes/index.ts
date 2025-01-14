@@ -16,6 +16,7 @@ const userRouter = Router();
 const accountRouter = Router();
 
 // users routes
+userRouter.get(Paths.Users.Me, userRoutes.getMe);
 userRouter.get(Paths.Users.GetAll, userRoutes.getAll);
 userRouter.get(Paths.Users.Get, userRoutes.getOne);
 userRouter.post(Paths.Users.Add, userRoutes.add);

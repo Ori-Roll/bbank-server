@@ -10,6 +10,8 @@ export const USER_NOT_FOUND_ERR = 'User not found';
 
 // **** Functions **** //
 
+// TODO: Shouldn't these all be async?
+
 /**
  * Get all users.
  */
@@ -19,6 +21,12 @@ function getAll(): Promise<User[]> {
 
 function getOne(id: string): Promise<User | null> {
   return UserData.getOne(id);
+}
+
+//TODO: I should have a partial user type
+
+function getOneBasic(id: string): Promise<Partial<User> | null> {
+  return UserData.getOneBasic(id);
 }
 
 /**
@@ -57,6 +65,7 @@ async function _delete(id: string): Promise<void> {
 export default {
   getAll,
   getOne,
+  getOneBasic,
   addOne,
   updateOne,
   delete: _delete,

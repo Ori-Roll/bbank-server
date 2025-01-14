@@ -37,6 +37,14 @@ async function getOne(id: string): Promise<User | null> {
   return user;
 }
 
+async function getOneBasic(id: string): Promise<Partial<User> | null> {
+  const user = await db.user.findUnique({
+    where: { id },
+  });
+  prismaDisconnect();
+  return user;
+}
+
 /**
  * Get all users.
  */
@@ -96,6 +104,7 @@ async function deleteUser(id: string): Promise<void> {
 
 export default {
   getOne,
+  getOneBasic,
   persists,
   getAll,
   addNewUser,

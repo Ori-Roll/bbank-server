@@ -27,6 +27,21 @@ const validators = {
 
 // **** Functions **** //
 
+const getMe = async (req: IReq<User>, res: IRes<any>) => {
+  const user = req.user;
+  console.log('user and userId', user, user?.id);
+  if (!req.isAuthenticated()) {
+    res.status(HttpStatusCodes.UNAUTHORIZED).end(); //TODO: !!!! Change this to the correct url
+  }
+
+  const userData = await handler.getOneBasic(user.id);
+
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ data: userData });
+};
+
 /**
  * Get all users.
  */
@@ -36,7 +51,7 @@ const getAll = async (req: IReq<User>, res: IRes<any>) => {
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
-    .json({ users });
+    .json({ data: users });
 };
 
 async function getOne(req: IReq<User, { id: string }>, res: IRes<any>) {
@@ -45,7 +60,7 @@ async function getOne(req: IReq<User, { id: string }>, res: IRes<any>) {
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
-    .json({ user });
+    .json({ data: user });
 }
 
 /**
@@ -57,7 +72,7 @@ const add = async (req: IReq<User>, res: IRes<User>) => {
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.CREATED)
-    .json({ newUser });
+    .json({ data: newUser });
 };
 
 /**
@@ -73,7 +88,7 @@ const update = async (
   res
     .setHeader('Content-Type', 'application/json')
     .status(HttpStatusCodes.OK)
-    .json({ user: updatedUser });
+    .json({ data: updatedUser });
 };
 
 /**
@@ -88,6 +103,7 @@ const _delete = async (req: IReq<User, { id: string }>, res: IRes<any>) => {
 export default {
   getAll,
   getOne,
+  getMe,
   add,
   update,
   delete: _delete,
