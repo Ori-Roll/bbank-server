@@ -24,18 +24,11 @@ model User {
 model Account {
   id        String     @id @default(cuid())
   kidName   String
-  current   Current?
+  current   Int        @default(0)
   periodics Periodic[]
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String     
 }
-
-model Current {
-  sum       Int     @default(0)
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId String  @unique
-}
-
 model Periodic {
   id                      String       @id @default(cuid())
   name                    String

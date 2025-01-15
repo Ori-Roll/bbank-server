@@ -26,8 +26,7 @@ async function getOne(id: string): Promise<User | null> {
     include: {
       accounts: {
         include: {
-          current: true,
-          periodics: {},
+          periodics: true,
         },
       },
     },
@@ -53,8 +52,7 @@ async function getAll(): Promise<User[]> {
     include: {
       accounts: {
         include: {
-          current: true,
-          periodics: {},
+          periodics: true,
         },
       },
     },

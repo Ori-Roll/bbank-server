@@ -9,9 +9,6 @@ const getAllUserAccounts = async (userID: string) => {
       where: {
         userId: userID,
       },
-      include: {
-        current: true,
-      },
     });
     return accounts;
   } catch (error) {
@@ -32,7 +29,6 @@ const getOneAccount = async (id: string, userId: string) => {
         userId,
       },
       include: {
-        current: true,
         periodics: true,
       },
     });
@@ -51,20 +47,8 @@ const addAccount = async (data: Account) => {
 
   try {
     const account = await db.account.create({
-      data: {
-        ...data,
-        ...(data.current
-          ? {
-              current: {
-                create: {
-                  ...data.current,
-                },
-              },
-            }
-          : {}),
-      },
+      data,
       include: {
-        current: true,
         periodics: true,
       },
     });
