@@ -78,9 +78,26 @@ const deleteAccount = async (id: string) => {
   }
 };
 
+const updateAccount = async (data: Account, userId: string) => {
+  try {
+    const account = await db.account.update({
+      where: { userId, id: data.id },
+      data,
+    });
+    return account;
+  } catch (error) {
+    console.error(error);
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Could not update account'
+    );
+  }
+};
+
 export default {
   getAllUserAccounts,
   getOneAccount,
   addAccount,
+  updateAccount,
   deleteAccount,
 } as const;

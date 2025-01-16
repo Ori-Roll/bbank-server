@@ -68,8 +68,21 @@ const addAccount = async (req: IReq<Account>, res: IRes<Account>) => {
     .json({ data: account });
 };
 
+const updateAccount = async (req: IReq<Account>, res: IRes<Account>) => {
+  const user = req.user;
+  const data = req.body;
+
+  const account = await handler.updateAccount(data, user.id);
+
+  res
+    .setHeader('Content-Type', 'application/json')
+    .status(HttpStatusCodes.OK)
+    .json({ data: account });
+};
+
 export default {
   getAllUserAccounts,
   getOneAccount,
   addAccount,
+  updateAccount,
 } as const;

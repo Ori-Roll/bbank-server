@@ -38,8 +38,30 @@ const addAccount = async (data: Omit<Account, 'userId'>, userId: string) => {
   return await accountAccess.addAccount(dataWithUserId);
 };
 
+const updateAccount = async (data: Account, userId: string) => {
+  const account = await accountAccess.getOneAccount(data.id, userId);
+
+  if (!account || account.userId !== userId) {
+    throw new RouteError(
+      HttpStatusCodes.FORBIDDEN,
+      'User not authorized to update account'
+    );
+  }
+  return await accountAccess.updateAccount(data, userId);
+};
+
+const deleteAccount = async (id: string, userId: string) => {
+  const user = await userHandler.getOne(userId);
+  if (!user) {
+    throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
+  }
+
+  return await accountAccess.deleteAccount(id);
+};
+
 export default {
   getAllUserAccounts,
   getOneAccount,
   addAccount,
+  updateAccount,
 } as const;
