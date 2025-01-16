@@ -25,5 +25,5 @@
     "scripts",
     "eslint.config.ts"
   ],
-  "exclude": ["src/public/*"]
+  "exclude": ["src/old_public/*"]
 }
