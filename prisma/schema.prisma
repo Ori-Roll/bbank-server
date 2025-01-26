@@ -44,6 +44,7 @@ enum TransactionReason {
   MANUAL
   PAYMENT
   TASK
+  CHORE
 }
 
 enum Interval {
@@ -84,17 +85,18 @@ model Transaction {
 
 
 model Task {
-  id          String   @id @default(cuid())
-  availableAt DateTime?
-  expiresAt   DateTime?
-  title       String
-  description String?
-  account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId   String
-  completed   Boolean  @default(false)
-  completedAt DateTime?
-  amount      Int?
-  times       Int?
-  periodic    Periodic? @relation(fields: [periodicId], references: [id], onDelete: Cascade)
-  periodicId  String    @unique
+  id                  String   @id @default(cuid())
+  availableAt         DateTime?
+  expiresAt           DateTime?
+  title               String
+  description         String?
+  account             Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId           String
+  completed           Boolean  @default(false)
+  completedAt         DateTime?
+  amount              Int?
+  requiredTimes       Int?
+  accomplishedTimes   Int?
+  periodic            Periodic? @relation(fields: [periodicId], references: [id], onDelete: Cascade)
+  periodicId          String?    @unique
 }

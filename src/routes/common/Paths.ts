@@ -25,6 +25,14 @@ export default {
     Update: '/:id',
     Delete: '/:id',
   },
+  Tasks: {
+    Base: '/tasks',
+    GetAll: '/',
+    Get: '/:id',
+    Add: '/',
+    Update: '/:id',
+    Delete: '/:id',
+  },
   Cron: {
     Base: '/cron',
     RunDaily: '/run-daily',

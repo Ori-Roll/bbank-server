@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["Bananank", "BIWEEK", "healthcheck", "uuidv"],
+  "cSpell.words": ["Bananank", "BIWEEK", "cuid", "healthcheck", "uuidv"],
   "workbench.colorCustomizations": {
     "titleBar.activeBackground": "#003207",
     "titleBar.activeForeground": "#31ff2a",

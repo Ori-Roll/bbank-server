@@ -5,6 +5,7 @@ import userRoutes from './userRoutes';
 import accountRoutes from './accountRoutes';
 import periodicRoutes from './periodicRoutes';
 import cronRoutes from './cronRoutes';
+import taskRoutes from './taskRoutes';
 
 // **** Variables **** //
 
@@ -17,6 +18,7 @@ const userRouter = Router();
 const accountRouter = Router();
 const periodicRouter = Router();
 const cronRouter = Router();
+const taskRouter = Router();
 
 // users routes
 userRouter.get(Paths.Users.Me, userRoutes.getMe);
@@ -40,14 +42,22 @@ periodicRouter.get(
 );
 periodicRouter.post(Paths.Periodics.Add, periodicRoutes.addPeriodic);
 
+// Task routes
+taskRouter.get(Paths.Tasks.GetAll, taskRoutes.getAllTasksForAccount);
+taskRouter.get(Paths.Tasks.Get, taskRoutes.getOneTask);
+taskRouter.post(Paths.Tasks.Add, taskRoutes.addTask);
+taskRouter.patch(Paths.Tasks.Update, taskRoutes.updateTask);
+taskRouter.delete(Paths.Tasks.Delete, taskRoutes.deleteTask);
+
 // Cron routes
 
 cronRouter.get(Paths.Cron.RunDaily, cronRoutes.executeDailyAction);
 
-// Add UserRouter
+// use Routes
 apiRouter.use(Paths.Users.Base, userRouter);
 apiRouter.use(Paths.Accounts.Base, accountRouter);
 apiRouter.use(Paths.Periodics.Base, periodicRouter);
+apiRouter.use(Paths.Tasks.Base, taskRouter);
 apiRouter.use(Paths.Cron.Base, cronRouter);
 
 // **** Export default **** //
