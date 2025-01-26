@@ -29,7 +29,11 @@ const getOneAccount = async (id: string, userId: string) => {
         userId,
       },
       include: {
-        periodics: true,
+        periodics: {
+          include: {
+            transactions: true,
+          },
+        },
       },
     });
     return account;
@@ -38,6 +42,42 @@ const getOneAccount = async (id: string, userId: string) => {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
       'Could not get account'
+    );
+  }
+};
+
+const getOneAccountByIdOnly = async (id: string) => {
+  try {
+    const account = await db.account.findFirst({
+      where: {
+        id,
+      },
+    });
+    return account;
+  } catch (error) {
+    console.error(error);
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Could not get account'
+    );
+  }
+};
+
+const getManyAccountsByIds = async (ids: string[]) => {
+  try {
+    const accounts = await db.account.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    return accounts;
+  } catch (error) {
+    console.error(error);
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Could not get accounts'
     );
   }
 };
@@ -78,10 +118,26 @@ const deleteAccount = async (id: string) => {
   }
 };
 
-const updateAccount = async (data: Account, userId: string) => {
+const updateAccount = async (id: string, data: Account, userId: string) => {
   try {
     const account = await db.account.update({
-      where: { userId, id: data.id },
+      where: { userId, id },
+      data,
+    });
+    return account;
+  } catch (error) {
+    console.error(error);
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Could not update account'
+    );
+  }
+};
+
+const updateAccountWithIdOnly = async (id: string, data: Partial<Account>) => {
+  try {
+    const account = await db.account.update({
+      where: { id },
       data,
     });
     return account;
@@ -97,7 +153,10 @@ const updateAccount = async (data: Account, userId: string) => {
 export default {
   getAllUserAccounts,
   getOneAccount,
+  getOneAccountByIdOnly,
+  getManyAccountsByIds,
   addAccount,
   updateAccount,
+  updateAccountWithIdOnly,
   deleteAccount,
 } as const;

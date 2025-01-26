@@ -5,6 +5,7 @@ import accountAccess from '@src/dataAccess/accountAccess';
 import userHandler from '@src/handlers/UserHandler';
 
 const getAllUserAccounts = async (userId: string) => {
+  console.log('->getAllUserAccounts-> userId is  ', userId);
   const user = await userHandler.getOne(userId);
   if (!user) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
@@ -28,8 +29,15 @@ const getOneAccount = async (id: string, userId: string) => {
   return await accountAccess.getOneAccount(id, userId);
 };
 
+const getOneAccountByIdOnly = async (id: string) => {
+  return await accountAccess.getOneAccountByIdOnly(id);
+};
+
+const getManyAccountsByIds = async (ids: string[]) => {
+  return await accountAccess.getManyAccountsByIds(ids);
+};
+
 const addAccount = async (data: Omit<Account, 'userId'>, userId: string) => {
-  console.log('In addAccount - userId: ', userId);
   const user = await userHandler.getOne(userId);
   if (!user) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
@@ -38,16 +46,19 @@ const addAccount = async (data: Omit<Account, 'userId'>, userId: string) => {
   return await accountAccess.addAccount(dataWithUserId);
 };
 
-const updateAccount = async (data: Account, userId: string) => {
-  const account = await accountAccess.getOneAccount(data.id, userId);
-
+const updateAccount = async (id: string, data: Account, userId: string) => {
+  const account = await accountAccess.getOneAccount(id, userId);
   if (!account || account.userId !== userId) {
     throw new RouteError(
       HttpStatusCodes.FORBIDDEN,
       'User not authorized to update account'
     );
   }
-  return await accountAccess.updateAccount(data, userId);
+  return await accountAccess.updateAccount(id, { ...data }, userId);
+};
+
+const updateAccountWithIdOnly = async (id: string, data: Partial<Account>) => {
+  return await accountAccess.updateAccountWithIdOnly(id, { ...data });
 };
 
 const deleteAccount = async (id: string, userId: string) => {
@@ -62,6 +73,9 @@ const deleteAccount = async (id: string, userId: string) => {
 export default {
   getAllUserAccounts,
   getOneAccount,
+  getOneAccountByIdOnly,
   addAccount,
   updateAccount,
+  updateAccountWithIdOnly,
+  getManyAccountsByIds,
 } as const;

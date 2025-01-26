@@ -26,22 +26,11 @@ model Account {
   kidName   String
   current   Int        @default(0)
   periodics Periodic[]
+  tasks     Task[]
+  transactions Transaction[]
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String     
-}
-model Periodic {
-  id                      String       @id @default(cuid())
-  name                    String
-  title                   String
-  actionType              ActionType
-  amount                  Int
-  interval                String
-  nextOccurrence          DateTime?
-  startsAt                DateTime?
-  endsAt                  DateTime?
-  transactions            Transaction[] 
-  account                 Account?      @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId               String       
+  userId    String    
+
 }
 
 enum ActionType {
@@ -50,11 +39,62 @@ enum ActionType {
   ADDRATE
 }
 
+enum TransactionReason {
+  PERIODIC
+  MANUAL
+  PAYMENT
+  TASK
+}
+
+enum Interval {
+  DAY
+  WEEK
+  BIWEEK
+  MONTH
+  YEAR
+}
+model Periodic {
+  id                      String       @id @default(cuid())
+  name                    String
+  title                   String
+  actionType              ActionType
+  amount                  Int?
+  task                    Task?
+  interval                Interval
+  nextOccurrence          DateTime?
+  startsAt                DateTime?
+  endsAt                  DateTime?
+  transactions            Transaction[] 
+  account                 Account?      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId               String       
+}
+
 model Transaction {
   id         String     @id @default(cuid())
   type       ActionType
+  reason     TransactionReason
   amount     Int
   executedAt DateTime
-  periodic   Periodic?   @relation(fields: [periodicId], references: [id], onDelete: Cascade)
+  viewed     Boolean    @default(false)
+  periodic   Periodic?  @relation(fields: [periodicId], references: [id], onDelete: Cascade)
   periodicId String?
+  account    Account?   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId  String
+}
+
+
+model Task {
+  id          String   @id @default(cuid())
+  availableAt DateTime?
+  expiresAt   DateTime?
+  title       String
+  description String?
+  account     Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId   String
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  amount      Int?
+  times       Int?
+  periodic    Periodic? @relation(fields: [periodicId], references: [id], onDelete: Cascade)
+  periodicId  String    @unique
 }

@@ -17,4 +17,16 @@ export default {
     Update: '/:id',
     Delete: '/:id',
   },
+  Periodics: {
+    Base: '/periodics',
+    GetAll: '/',
+    Get: '/:id',
+    Add: '/',
+    Update: '/:id',
+    Delete: '/:id',
+  },
+  Cron: {
+    Base: '/cron',
+    RunDaily: '/run-daily',
+  },
 } as const;

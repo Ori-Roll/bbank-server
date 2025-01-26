@@ -1,44 +1,74 @@
-import { PrismaClient, Periodic } from '@prisma/client';
+import { Periodic } from '@prisma/client';
+import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import { RouteError } from '@src/common/route-errors';
+import { db } from '@src/config/db';
 
-const prisma = new PrismaClient();
-
-export const getPeriodicById = async (id: string): Promise<Periodic | null> => {
-  return await prisma.periodic.findUnique({
+const getPeriodicById = async (id: string): Promise<Periodic | null> => {
+  return await db.periodic.findUnique({
     where: { id },
   });
-  // TODO: add prismaDisconnect to all data access functions
 };
 
-export const getAllPeriodicsForAccount = async (
+const getAllPeriodicsForAccount = async (
   accountId: string
 ): Promise<Periodic[]> => {
-  return await prisma.periodic.findMany({
+  return await db.periodic.findMany({
     where: {
       accountId,
     },
   });
 };
 
-export const addPeriodic = async (
-  data: Omit<Periodic, 'id'>
-): Promise<Periodic> => {
-  return await prisma.periodic.create({
-    data,
+const addPeriodic = async (data: Omit<Periodic, 'id'>): Promise<Periodic> => {
+  const { accountId, ...modPeriodic } = data;
+
+  return await db.periodic.create({
+    data: {
+      ...modPeriodic,
+      account: {
+        connect: {
+          id: data.accountId,
+        },
+      },
+    },
   });
 };
 
-export const updatePeriodic = async (
+const updatePeriodic = async (
   id: string,
   data: Partial<Periodic>
 ): Promise<Periodic> => {
-  return await prisma.periodic.update({
+  return await db.periodic.update({
     where: { id },
     data,
   });
 };
 
-export const deletePeriodic = async (id: string): Promise<Periodic> => {
-  return await prisma.periodic.delete({
+const deletePeriodic = async (id: string): Promise<Periodic> => {
+  return await db.periodic.delete({
     where: { id },
   });
+};
+
+const getAllByNextOccurrenceBetweenDates = async (
+  minDate: Date,
+  maxDate: Date
+) => {
+  return await db.periodic.findMany({
+    where: {
+      nextOccurrence: {
+        gte: minDate,
+        lte: maxDate,
+      },
+    },
+  });
+};
+
+export default {
+  getPeriodicById,
+  getAllPeriodicsForAccount,
+  addPeriodic,
+  updatePeriodic,
+  deletePeriodic,
+  getAllByNextOccurrenceBetweenDates,
 };

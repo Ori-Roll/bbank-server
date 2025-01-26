@@ -3,7 +3,8 @@ import { Router } from 'express';
 import Paths from './common/Paths';
 import userRoutes from './userRoutes';
 import accountRoutes from './accountRoutes';
-// import periodicRoutes from './PeriodicRoutes';
+import periodicRoutes from './periodicRoutes';
+import cronRoutes from './cronRoutes';
 
 // **** Variables **** //
 
@@ -14,6 +15,8 @@ const apiRouter = Router();
 // Init router
 const userRouter = Router();
 const accountRouter = Router();
+const periodicRouter = Router();
+const cronRouter = Router();
 
 // users routes
 userRouter.get(Paths.Users.Me, userRoutes.getMe);
@@ -28,11 +31,24 @@ userRouter.put(Paths.Users.Update, userRoutes.update);
 accountRouter.get(Paths.Accounts.GetAll, accountRoutes.getAllUserAccounts);
 accountRouter.get(Paths.Accounts.Get, accountRoutes.getOneAccount);
 accountRouter.post(Paths.Accounts.Add, accountRoutes.addAccount);
-accountRouter.post(Paths.Accounts.Update, accountRoutes.updateAccount);
+accountRouter.patch(Paths.Accounts.Update, accountRoutes.updateAccount);
+
+// Periodic routes
+periodicRouter.get(
+  Paths.Periodics.GetAll,
+  periodicRoutes.getAllPeriodicsForAccount
+);
+periodicRouter.post(Paths.Periodics.Add, periodicRoutes.addPeriodic);
+
+// Cron routes
+
+cronRouter.get(Paths.Cron.RunDaily, cronRoutes.executeDailyAction);
 
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, userRouter);
 apiRouter.use(Paths.Accounts.Base, accountRouter);
+apiRouter.use(Paths.Periodics.Base, periodicRouter);
+apiRouter.use(Paths.Cron.Base, cronRouter);
 
 // **** Export default **** //
 

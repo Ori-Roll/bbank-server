@@ -2,7 +2,6 @@ import { Account } from '@prisma/client';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { RouteError } from '@src/common/route-errors';
 import { IReq, IRes } from '@src/common/types';
-import { error } from 'console';
 import { NextFunction } from 'express';
 
 //TODO: Move this somewhere else (maybe this should be in an env or something)
@@ -11,6 +10,7 @@ const publicRoutes = [
   '/auth/google/callback',
   '/auth/logout',
   '/auth/login',
+  '/api/cron/run-daily',
 ];
 
 const FE_DEV_URL = 'http://localhost:5173';
