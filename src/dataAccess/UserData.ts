@@ -27,6 +27,8 @@ async function getOne(id: string): Promise<User | null> {
       accounts: {
         include: {
           periodics: true,
+          tasks: true,
+          transactions: true,
         },
       },
     },

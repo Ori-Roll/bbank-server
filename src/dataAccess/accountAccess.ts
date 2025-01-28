@@ -34,6 +34,8 @@ const getOneAccount = async (id: string, userId: string) => {
             transactions: true,
           },
         },
+        tasks: true,
+        transactions: true,
       },
     });
     return account;
