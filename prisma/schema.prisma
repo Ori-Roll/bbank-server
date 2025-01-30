@@ -14,11 +14,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  accounts  Account[]
-  googleId  String?
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  name                  String?
+  accounts              Account[]
+  googleId              String?
+  parentLock            ParentLock?
+}
+
+model ParentLock {
+  id         String   @id  @default(cuid()) 
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String   @unique
+  pin        String
+  question   String?
+  answer     String?
 }
 
 model Account {

@@ -6,6 +6,7 @@ import accountRoutes from './accountRoutes';
 import periodicRoutes from './periodicRoutes';
 import cronRoutes from './cronRoutes';
 import taskRoutes from './taskRoutes';
+import parentLock from './parentLock';
 
 // **** Variables **** //
 
@@ -19,6 +20,7 @@ const accountRouter = Router();
 const periodicRouter = Router();
 const cronRouter = Router();
 const taskRouter = Router();
+const parentLockRouter = Router();
 
 // users routes
 userRouter.get(Paths.Users.Me, userRoutes.getMe);
@@ -26,6 +28,23 @@ userRouter.get(Paths.Users.GetAll, userRoutes.getAll);
 userRouter.get(Paths.Users.Get, userRoutes.getOne);
 userRouter.post(Paths.Users.Add, userRoutes.add);
 userRouter.put(Paths.Users.Update, userRoutes.update);
+
+parentLockRouter.get(Paths.Users.ParentLock.Get, parentLock.validateParentLock);
+parentLockRouter.post(
+  Paths.Users.ParentLock.Add,
+  parentLock.createParentLockWithPinAndQuestion
+);
+parentLockRouter.patch(
+  Paths.Users.ParentLock.Update,
+  parentLock.updateParentLockPinAndQuestion
+);
+parentLockRouter.delete(
+  Paths.Users.ParentLock.Delete,
+  parentLock.deleteParentLock
+);
+
+userRouter.use(Paths.Users.ParentLock.Base, parentLockRouter);
+
 // userRouter.delete(Paths.Users.Delete, userRoutes.delete);
 
 // Account routes

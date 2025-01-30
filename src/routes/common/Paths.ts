@@ -8,6 +8,13 @@ export default {
     Add: '/',
     Update: '/:id',
     Delete: '/:id',
+    ParentLock: {
+      Base: '/parent-lock',
+      Get: '/:pin',
+      Add: '/',
+      Update: '/',
+      Delete: '/',
+    },
   },
   Accounts: {
     Base: '/accounts',

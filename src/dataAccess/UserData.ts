@@ -31,6 +31,7 @@ async function getOne(id: string): Promise<User | null> {
           transactions: true,
         },
       },
+      parentLock: true,
     },
   });
   // TODO: return no user found if user is null
@@ -45,7 +46,7 @@ async function getOneBasic(id: string): Promise<Partial<User> | null> {
   prismaDisconnect();
   return user;
 }
-
+//TODO: Remove this maybe - what is this for?
 /**
  * Get all users.
  */
