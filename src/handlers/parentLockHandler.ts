@@ -1,13 +1,12 @@
 import { ParentLock, User } from '@prisma/client';
 import parentLockAccess from '@src/dataAccess/parentLockAccess';
 
-const validateParentLock = async (userId: string, pin: string) => {
+const validateParentLock = async (userId: string, pin: number) => {
   const parentLock = await parentLockAccess.getParentLock(userId);
 
   if (!parentLock) {
     throw new Error('Parent lock does not exist');
   }
-
   if (parentLock.pin !== pin) {
     throw new Error('Invalid pin');
   }

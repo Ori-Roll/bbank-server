@@ -26,7 +26,7 @@ model ParentLock {
   id         String   @id  @default(cuid()) 
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String   @unique
-  pin        String
+  pin        Int
   question   String?
   answer     String?
 }

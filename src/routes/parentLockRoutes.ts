@@ -4,13 +4,21 @@ import { IReq, IRes } from '@src/common/types';
 import parentLockHandler from '@src/handlers/parentLockHandler';
 
 const validateParentLock = async (
-  req: IReq<null, { pin: string }>,
+  req: IReq<null, { pin: number }>,
   res: IRes<null>
 ) => {
   const userId = req.user.id;
 
-  const { pin } = req.params;
-  ``;
+  const { pin: reqPin } = req.params;
+
+  if (!reqPin || isNaN(Number(reqPin))) {
+    res.status(HttpStatusCodes.BAD_REQUEST).json({ status: 'invalid' });
+    return;
+  }
+
+  const pin = Number(reqPin);
+
+  console.log('pin', pin);
   const validated = await parentLockHandler.validateParentLock(userId, pin);
 
   if (!validated) {

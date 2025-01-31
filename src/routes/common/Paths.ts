@@ -10,7 +10,7 @@ export default {
     Delete: '/:id',
     ParentLock: {
       Base: '/parent-lock',
-      Get: '/:pin',
+      Get: '/validate/:pin',
       Add: '/',
       Update: '/',
       Delete: '/',

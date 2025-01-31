@@ -34,7 +34,7 @@ const getMe = async (req: IReq<User>, res: IRes<any>) => {
     res.status(HttpStatusCodes.UNAUTHORIZED).end(); //TODO: !!!! Change this to the correct url
   }
 
-  const userData = await handler.getOneBasic(user.id);
+  const userData = await handler.getOne(user.id);
 
   res
     .setHeader('Content-Type', 'application/json')

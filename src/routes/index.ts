@@ -6,7 +6,7 @@ import accountRoutes from './accountRoutes';
 import periodicRoutes from './periodicRoutes';
 import cronRoutes from './cronRoutes';
 import taskRoutes from './taskRoutes';
-import parentLock from './parentLock';
+import parentLockRoutes from './parentLockRoutes';
 
 // **** Variables **** //
 
@@ -29,18 +29,21 @@ userRouter.get(Paths.Users.Get, userRoutes.getOne);
 userRouter.post(Paths.Users.Add, userRoutes.add);
 userRouter.put(Paths.Users.Update, userRoutes.update);
 
-parentLockRouter.get(Paths.Users.ParentLock.Get, parentLock.validateParentLock);
+parentLockRouter.get(
+  Paths.Users.ParentLock.Get,
+  parentLockRoutes.validateParentLock
+);
 parentLockRouter.post(
   Paths.Users.ParentLock.Add,
-  parentLock.createParentLockWithPinAndQuestion
+  parentLockRoutes.createParentLockWithPinAndQuestion
 );
 parentLockRouter.patch(
   Paths.Users.ParentLock.Update,
-  parentLock.updateParentLockPinAndQuestion
+  parentLockRoutes.updateParentLockPinAndQuestion
 );
 parentLockRouter.delete(
   Paths.Users.ParentLock.Delete,
-  parentLock.deleteParentLock
+  parentLockRoutes.deleteParentLock
 );
 
 userRouter.use(Paths.Users.ParentLock.Base, parentLockRouter);
